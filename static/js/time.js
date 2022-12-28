@@ -24,14 +24,14 @@ function updateClock() {
         } else {
             let time = JSON.parse(event.data);
             let year = time.year;
-            let month = "the " + time.month[0] + " month of " + time.month[1];
+            let month = "the " + time.month[0].toLowerCase() + " month of " + time.month[1].toLowerCase();
             let day = time.day;
             let second = time.second;
             let sks = second / 6000;
             let rem = second % 6000;
             sks = Math.floor(sks);
 
-            let clock_text = "Year " + year + ", " + day + getDayEnding(day) + " day of " + month + ", " + sks + " sks " + rem + " rem";
+            let clock_text = "year " + year + "<br>" + day + getDayEnding(day) + " day of " + month + "<br>" + sks + " sks " + rem + " rem";
             clock.innerHTML = clock_text;
         }
     };
