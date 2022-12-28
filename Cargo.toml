@@ -1,0 +1,21 @@
+[package]
+name = "ht_web"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+ht_cal = { path = "../ht_cal" }
+serde = { version = "1.0", features = ["derive"] }
+tokio = { version = "1.0", features = ["full"] }
+serde_json = "1.0"
+futures = "0.3.25"
+futures-util = "0.3.25"
+warp = "0.3.3"
+rand = "0.8.5"
+log = "0.4.17"
+env_logger = "0.10.0"
+lazy_static = "1.4.0"
+rmp-serde = "1.1.1"
+chrono = "0.4.22"
