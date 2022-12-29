@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>huskitopia</title>
+    <title>huskitopia - calendar</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/pico.min.css">
@@ -9,12 +9,8 @@
 </head>
 <body>
 <main class="container">
-    <div id="top-clock">
-        <h3 class="no-space">today's date is...</h3>
-        <h1 id="clock"></h1>
-    </div>
     <div class="calendar-area">
-        <h5 id="month"></h5>
+        <h1 class="no-space">the <select class="inline-select" id="gl">{{{gl}}}</select> month of <select class="inline-select" id="months">{{{months}}}</select></h1>
         <div class="calendar">
             <div class="day1">1</div>
             <div class="day2">2</div>
@@ -42,9 +38,8 @@
             <div class="day24">24</div>
             <div class="day25">...</div>
         </div>
-        <a href="calendar/today" role="button" class="secondary middle-class">view full calendar</a>
     </div>
+    <h5>work in progress... (:</h5>
 </main>
-<script src="js/time.js"></script>
 </body>
 </html>
