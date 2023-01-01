@@ -30,34 +30,80 @@ pub async fn manage_htcal() {
     // loop every 50 ms
     loop {
         // connect via tcp to PORT_Q
-        let mut socket = tokio::net::TcpStream::connect((HT_HOST.as_str(), PORT_Q)).await.unwrap();
+        let socket = tokio::net::TcpStream::connect((HT_HOST.as_str(), PORT_Q)).await;
+        if socket.is_err() {
+            warn!("failed to connect to ht_cal server");
+            tokio::time::sleep(std::time::Duration::from_millis(500)).await;
+            continue;
+        }
+        let mut socket = socket.unwrap();
         // send a single byte
-        socket.write_all(&[0]).await.unwrap();
+        let res = socket.write_all(&[0]).await;
+        if res.is_err() {
+            warn!("failed to send request to ht_cal server");
+            tokio::time::sleep(std::time::Duration::from_millis(500)).await;
+            continue;
+        }
         // read response
         let mut buf = [0; 1024];
-        let n = socket.read(&mut buf).await.unwrap();
+        let n = socket.read(&mut buf).await;
+        if n.is_err() {
+            warn!("failed to read response from ht_cal server");
+            tokio::time::sleep(std::time::Duration::from_millis(500)).await;
+            continue;
+        }
+        let n = n.unwrap();
         if n == 0 {
             warn!("ht_cal server did not respond");
         }
         // deserialise with rmp-serde
-        let response: PacketData = rmp_serde::decode::from_slice(&buf[..n]).unwrap();
+        let response: Result<PacketData, _> = rmp_serde::decode::from_slice(&buf[..n]);
+        if response.is_err() {
+            warn!("failed to deserialise response from ht_cal server");
+            tokio::time::sleep(std::time::Duration::from_millis(500)).await;
+            continue;
+        }
+        let response = response.unwrap();
         // update HDATE
         {
             let mut hdt = HDATE.lock().unwrap();
             *hdt = response;
         }
         // connect via tcp to PORT_H
-        let mut socket = tokio::net::TcpStream::connect((HT_HOST.as_str(), PORT_H)).await.unwrap();
+        let socket = tokio::net::TcpStream::connect((HT_HOST.as_str(), PORT_H)).await;
+        if socket.is_err() {
+            warn!("failed to connect to ht_cal server");
+            tokio::time::sleep(std::time::Duration::from_millis(500)).await;
+            continue;
+        }
+        let mut socket = socket.unwrap();
         // send a single byte
-        socket.write_all(&[0]).await.unwrap();
+        let res = socket.write_all(&[0]).await;
+        if res.is_err() {
+            warn!("failed to send request to ht_cal server");
+            tokio::time::sleep(std::time::Duration::from_millis(500)).await;
+            continue;
+        }
         // read response
         let mut buf = [0; 1024];
-        let n = socket.read(&mut buf).await.unwrap();
+        let n = socket.read(&mut buf).await;
+        if n.is_err() {
+            warn!("failed to read response from ht_cal server");
+            tokio::time::sleep(std::time::Duration::from_millis(500)).await;
+            continue;
+        }
+        let n = n.unwrap();
         if n == 0 {
             warn!("ht_cal server did not respond");
         }
         // deserialise with rmp-serde
-        let response: HistoryData = rmp_serde::decode::from_slice(&buf[..n]).unwrap();
+        let response: Result<HistoryData, _> = rmp_serde::decode::from_slice(&buf[..n]);
+        if response.is_err() {
+            warn!("failed to deserialise response from ht_cal server");
+            tokio::time::sleep(std::time::Duration::from_millis(500)).await;
+            continue;
+        }
+        let response = response.unwrap();
         // update HISTORY
         {
             let mut history = HISTORY.lock().unwrap();
